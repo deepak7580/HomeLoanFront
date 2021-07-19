@@ -18,7 +18,7 @@ export const CustomerList = () => {
   return (
     <div>
       <AppNav />
-      <div className=" alert alert-secondary ">
+      <div className=" alert alert-secondary report-card-i">
         <h3 style={{ textAlign: "center", fontSize: "150" }}> My Details</h3>
       </div>
       <table className="table ml-10">

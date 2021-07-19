@@ -37,18 +37,21 @@ export const AppNav = () => {
             {/* <Nav.Link className="mx-auto " as={Link} to="/customer-upsert">
               Customer Register
             </Nav.Link> */}
-            <Nav.Link onClick={clearCustomerURef}>Customer Register</Nav.Link>
+            {/* <Nav.Link onClick={clearCustomerURef}>Customer Register</Nav.Link> */}
             <Nav.Link className="mx-auto " as={Link} to="/status">
               Application Status
             </Nav.Link>
-            <Nav.Link className="mx-auto " as={Link} to="/user-signin">
-              <h6 className="ml-1" onClick={signOut} role="button">
-                Sign out
-              </h6>
+            <Nav.Link
+              className="mx-auto "
+              as={Link}
+              to="/user-signin"
+              onClick={signOut}
+            >
+              Sign out
             </Nav.Link>
-            <Nav.Link className="mx-auto " as={Link} to="/admin-register">
+            {/* <Nav.Link className="mx-auto " as={Link} to="/admin-register">
               Admin Register
-            </Nav.Link>
+            </Nav.Link> */}
             <Nav.Link className="mx-auto " as={Link} to="/apply-loan">
               ApplyLoan
             </Nav.Link>

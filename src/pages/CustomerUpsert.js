@@ -28,6 +28,7 @@ export const CustomerUpsert = () => {
 
   // const updateRole = (e) => setRole(e.target.value);
   const updateAadharNumber = (e) => setAadharNumber(e.target.value);
+
   const updateCustomerName = (e) => setCustomerName(e.target.value);
   const updateDateOfBirth = (e) => setDateOfBirth(e.target.value);
   const updateEmail = (e) => setEmail(e.target.value);
@@ -133,6 +134,15 @@ export const CustomerUpsert = () => {
               className="form-control form-control-lg mb-1 col-sm-7"
               placeholder="Enter Date of Birth"
             />
+
+            {/* <input
+              type="date"
+              name="begin"
+              placeholder="dd-mm-yyyy"
+              value=""
+              min="1997-01-01"
+              max="2030-12-31"
+            /> */}
           </div>
 
           <div className="form-group row">
