@@ -5,19 +5,35 @@ import Slider from "@material-ui/core/Slider";
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createApplyLoan } from "../redux/store";
+import { createApplyLoan, updateLoanAction } from "../redux/store";
 
 export const ApplyLoan = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  const [tenure, setTenure] = React.useState("");
-  const [customerId, setCustomerId] = useState("");
-  const [loanAppliedAmount, setLoanAppliedAmount] = useState("");
-  const [applicationDate, setApplicationDate] = useState("");
-  const [totalAnnualIncome, setTotalAnnualIncome] = useState("");
-  const [monthlyExpenses, setMonthlyExpenses] = useState("");
-  const [otherMonthlyExpenses, setOtherMonthlyExpenses] = useState("");
-  const [rateOfInterest, setRateOfInterest] = useState("");
+  console.log("heloooooooooo", state.updateLoan);
+  const [tenure, setTenure] = React.useState(state.updateLoan.tenure);
+  const [customerId, setCustomerId] = useState(
+    state.updateLoan.customer?.customerId
+  );
+  const [loanAppliedAmount, setLoanAppliedAmount] = useState(
+    state.updateLoan.loanAppliedAmount
+  );
+
+  const [applicationDate, setApplicationDate] = useState(
+    state.updateLoan.applicationDate
+  );
+  const [totalAnnualIncome, setTotalAnnualIncome] = useState(
+    state.updateLoan.totalAnnualIncome
+  );
+  const [monthlyExpenses, setMonthlyExpenses] = useState(
+    state.updateLoan.monthlyExpenses
+  );
+  const [otherMonthlyExpenses, setOtherMonthlyExpenses] = useState(
+    state.updateLoan.otherMonthlyExpenses
+  );
+  const [rateOfInterest, setRateOfInterest] = useState(
+    state.updateLoan.rateOfInterest
+  );
 
   const updateCustomerId = (e) => setCustomerId(e.target.value);
   const updateLoanAppliedAmount = (e) => setLoanAppliedAmount(e.target.value);
@@ -32,6 +48,8 @@ export const ApplyLoan = () => {
     dispatch(
       createApplyLoan({
         applicationDate,
+        // applicationId: state.updateLoan.applicationId,
+
         loanAppliedAmount,
         totalAnnualIncome,
         monthlyExpenses,
@@ -46,6 +64,40 @@ export const ApplyLoan = () => {
     );
   };
 
+  const update = () => {
+    dispatch(
+      updateLoanAction({
+        applicationDate,
+        adminApproval: state.updateLoan.adminApproval,
+        applicationId: state.updateLoan.applicationId,
+        finananceVerificationApproval:
+          state.updateLoan.finananceVerificationApproval,
+        // landVerificationApproval: state.updateLoan.landVerificationApproval,
+        landVerificationApproval: state.loanList.landVerificationApproval,
+        loanApprovedAmount: state.loanList.loanApprovedAmount,
+        loanAppliedAmount,
+        totalAnnualIncome,
+        monthlyExpenses,
+        otherMonthlyExpenses,
+        rateOfInterest,
+        tenure,
+        status: state.loanList.status,
+        customer: {
+          customerId,
+          // aadharNumber: state.updateLoan.customer.aadharNumber,
+          aadharNumber: state.customerList.aadharNumber,
+          customerName: state.customerList.customerName,
+          email: state.customerList.email,
+          gender: state.customerList.gender,
+          mobileNumber: state.customerList.mobileNumber,
+          nationality: state.customerList.nationality,
+          panNumber: state.customerList.panNumber,
+          // dateOfBirth:
+        },
+      })
+    );
+  };
+
   // Changing State when volume increases/decreases
   const rangeSelector = (event, newValue) => {
     setTenure(newValue);
@@ -55,7 +107,11 @@ export const ApplyLoan = () => {
     <div>
       <AppNav />
       <div className="alert alert-secondary ">
-        <h3>Apply For Loan</h3>
+        {state.updateLoan.applicationId ? (
+          <h3> Update Loan</h3>
+        ) : (
+          <h3>Apply For Loan</h3>
+        )}
       </div>
       <div className="container  pt-1 pb-5 w-50 ">
         <form className="mx-4 alert alert-primary">
@@ -183,12 +239,22 @@ export const ApplyLoan = () => {
           </div>
 
           <div>
-            <input
-              type="button"
-              value="Apply for loan"
-              className="btn btn-lg btn-dark w-100 mb-2"
-              onClick={addApplyLoan}
-            />
+            {state.updateLoan.applicationId ? (
+              <input
+                type="button"
+                // onClick={addNewEmployee}
+                onClick={update}
+                value="Update Loan"
+                className="btn btn-lg btn-secondary w-100"
+              />
+            ) : (
+              <input
+                type="button"
+                value="Apply for loan"
+                className="btn btn-lg btn-dark w-100 mb-2"
+                onClick={addApplyLoan}
+              />
+            )}
           </div>
         </form>
       </div>

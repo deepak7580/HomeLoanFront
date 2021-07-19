@@ -3,9 +3,15 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { AppNav } from "./AppNav";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllLoanAction, createApplication } from "../redux/store";
+import {
+  getAllLoanAction,
+  createApplication,
+  ApplicationRenderAction,
+} from "../redux/store";
+import { useHistory } from "react-router-dom";
 
 export function Status() {
+  const history = useHistory();
   const { aggrementList, loanList } = useSelector((state) => state);
   const dispatch = useDispatch();
   useEffect(() => dispatch(getAllLoanAction()), []);
@@ -22,6 +28,11 @@ export function Status() {
     );
   };
 
+  const updateLoan = (loanList) => {
+    // console.log("Update Record", customerList);
+    dispatch(ApplicationRenderAction(loanList));
+    history.push("/apply-loan");
+  };
   return (
     <div>
       <AppNav />
@@ -69,7 +80,7 @@ export function Status() {
                 type="button"
                 value="update"
                 className="btn btn-outline-secondary btn-sm"
-                // onClick={() => updateRecord( customerList)}
+                onClick={() => updateLoan(loanList)}
               />
             </td>
           </tr>
@@ -92,11 +103,11 @@ export function Status() {
         <table className="table ml-10">
           <thead className="thead-dark">
             <tr>
-              <th scope="col">ApplicationId</th>
-              <th scope="col">admin_approval</th>
-              <th scope="col">application_date</th>
-              <th scope="col">finance_approval</th>
-              <th scope="col">land_approval</th>
+              <th scope="col">Loan Agreement</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Loan Amount</th>
+              <th scope="col">Emi Amount</th>
+              <th scope="col">Interset Amount</th>
             </tr>
           </thead>
           <tbody className="alert alert-primary">

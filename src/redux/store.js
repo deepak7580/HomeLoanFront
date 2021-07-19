@@ -11,8 +11,10 @@ const initState = {
   authFailure: false,
   authSuccess: false,
   updateRef: {},
+  updateLoan: {},
   loanList: {},
   aggrementList: undefined,
+  ApplicationList: {},
 };
 //action type
 const PROGRESS_ACTION_TYPE = "PROGRESS_ACTION_TYPE";
@@ -20,6 +22,9 @@ const AUTH_FAILURE_ACTION_TYPE = "AUTH_FAILURE_ACTION_TYPE";
 const AUTH_SUCCESS_ACTION_TYPE = "AUTH_SUCCESS_ACTION_TYPE";
 const LOAN_APPLICATION_GET_ALL_ACTION_TYPE =
   "LOAN_APPLICATION_GET_ALL_ACTION_TYPE";
+
+const APPLICATION_UPDATE_RENDER_ACTION_TYPE =
+  "APPLICATION_UPDATE_RENDER_ACTION_TYPE";
 
 const LOAN_APPLICATION_GET_SUCCESS = "LOAN_APPLICATION_GET_SUCCESS";
 //
@@ -51,16 +56,20 @@ export const getAllCustomerAction = () => {
 export const getAllLoanAction = () => {
   return async (dispatch) => {
     let loanRef = JSON.parse(localStorage.getItem("loanId"));
+    if (loanRef != null) {
+      const url = `http://localhost:8080/view/${loanRef.applicationId}`;
+      const response = await axios.get(url);
+      console.log(response.data);
+
+      dispatch({
+        type: "LOAN_APPLICATION_GET_ALL_ACTION_TYPE",
+        payload: response.data,
+      });
+    } else {
+      alert("please apply first!!1");
+    }
 
     // const url = `http://localhost:8080/customer/viewCustomer/`;
-    const url = `http://localhost:8080/view/${loanRef.applicationId}`;
-    const response = await axios.get(url);
-    console.log(response.data);
-
-    dispatch({
-      type: "LOAN_APPLICATION_GET_ALL_ACTION_TYPE",
-      payload: response.data,
-    });
   };
 };
 
@@ -115,9 +124,17 @@ export const authenticateUserAction = (payload) => {
       // updat the UI:: THIS IS TRICKY
       //console.log("I am authenticated");
       // console.log(response.data);
+
       dispatch({ type: AUTH_SUCCESS_ACTION_TYPE, payload: true });
       localStorage.setItem("authSuccess", "1");
       localStorage.setItem("customerId", JSON.stringify(response.data));
+
+      const url = `http://localhost:8080/view/customer`;
+      const response1 = await axios.post(url, payload);
+      if (response1.data !== "") {
+        // dispatch({ type: AUTH_SUCCESS_ACTION_TYPE, payload: response.data });
+        localStorage.setItem("loanId", JSON.stringify(response1.data));
+      }
 
       // NOT DOING THE ACTIVITY OF 5 SECONDS :: page will be redirected to anohter page.
     } else {
@@ -140,7 +157,7 @@ export const updateCustomerAction = (payload) => {
     await axios.put(url, payload);
 
     // making the uref empty again.
-    updateRenderAction({});
+    updateRenderAction({}); //applicationRenderAction
 
     // update the ui. TODO
     // dispatch({ type: PROGRESS_ACTION_TYPE, payload: true });
@@ -152,10 +169,25 @@ export const updateCustomerAction = (payload) => {
   };
 };
 
+export const updateLoanAction = (payload) => {
+  return async (dispatch) => {
+    // making the server call.
+    const url = `http://localhost:8080/update/${payload.applicationId}`;
+    await axios.put(url, payload);
+
+    // making the uref empty again.
+    // updateRenderAction({}); //applicationRenderAction
+    ApplicationRenderAction({});
+  };
+};
+
 export const signOutAction = () => {
   return async (dispatch) => {
     console.log("signout");
     localStorage.removeItem("authSuccess");
+    localStorage.removeItem("loanId");
+    localStorage.removeItem("customerId");
+
     dispatch({ type: AUTH_SUCCESS_ACTION_TYPE, payload: false });
   };
 };
@@ -165,6 +197,12 @@ export const updateRenderAction = (payload) => {
   // ONLY UPDATEING THE UI
   // 5
   return { type: CUSTOMER_UPDATE_RENDER_ACTION_TYPE, payload: payload };
+};
+
+export const ApplicationRenderAction = (payload) => {
+  // ONLY UPDATEING THE UI
+  // 5
+  return { type: APPLICATION_UPDATE_RENDER_ACTION_TYPE, payload: payload };
 };
 
 //
@@ -183,6 +221,8 @@ function CustomerReducer(state = initState, action) {
       return { ...state, loanList: action.payload };
     case LOAN_APPLICATION_GET_SUCCESS:
       return { ...state, aggrementList: action.payload };
+    case APPLICATION_UPDATE_RENDER_ACTION_TYPE:
+      return { ...state, updateLoan: action.payload };
 
     default:
       return state;
