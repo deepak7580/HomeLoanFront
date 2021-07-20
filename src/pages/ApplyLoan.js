@@ -5,12 +5,14 @@ import Slider from "@material-ui/core/Slider";
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createApplyLoan, updateLoanAction } from "../redux/store";
+import { createApplyLoan, store, updateLoanAction } from "../redux/store";
+import axios from "axios";
 
 export const ApplyLoan = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
   console.log("heloooooooooo", state.updateLoan);
+  console.log(state.loanList.loanApprovedAmount);
   const [tenure, setTenure] = React.useState(state.updateLoan.tenure);
   const [customerId, setCustomerId] = useState(
     state.updateLoan.customer?.customerId
@@ -65,38 +67,49 @@ export const ApplyLoan = () => {
   };
 
   const update = () => {
-    dispatch(
-      updateLoanAction({
-        applicationDate,
-        adminApproval: state.updateLoan.adminApproval,
-        applicationId: state.updateLoan.applicationId,
-        finananceVerificationApproval:
-          state.updateLoan.finananceVerificationApproval,
-        // landVerificationApproval: state.updateLoan.landVerificationApproval,
-        landVerificationApproval: state.loanList.landVerificationApproval,
-        loanApprovedAmount: state.loanList.loanApprovedAmount,
-        loanAppliedAmount,
-        totalAnnualIncome,
-        monthlyExpenses,
-        otherMonthlyExpenses,
-        rateOfInterest,
-        tenure,
-        status: state.loanList.status,
-        customer: {
-          customerId,
-          // aadharNumber: state.updateLoan.customer.aadharNumber,
-          aadharNumber: state.customerList.aadharNumber,
-          customerName: state.customerList.customerName,
-          email: state.customerList.email,
-          gender: state.customerList.gender,
-          mobileNumber: state.customerList.mobileNumber,
-          nationality: state.customerList.nationality,
-          panNumber: state.customerList.panNumber,
-          // dateOfBirth:
-        },
-      })
-    );
+    console.log("inside update", state.loanList.applicationId);
+    const url = `http://localhost:8080/view/${state.loanList.applicationId}`;
+
+    axios.get(url).then((response) => {
+      {
+        response.data.loanApprovedAmount = state.loanList.loanApprovedAmount;
+      }
+      console.log(response);
+      dispatch(updateLoanAction(response));
+    });
   };
+
+  // dispatch(
+  //   updateLoanAction(
+  // applicationDate,
+  // adminApproval: state.updateLoan.adminApproval,
+  // applicationId: state.loanList.applicationId,
+  // finananceVerificationApproval:
+  //   state.updateLoan.finananceVerificationApproval,
+  // // landVerificationApproval: state.updateLoan.landVerificationApproval,
+  // landVerificationApproval: state.loanList.landVerificationApproval,
+  // loanApprovedAmount: state.loanList.loanApprovedAmount,
+  // loanAppliedAmount,
+  // totalAnnualIncome,
+  // monthlyExpenses,
+  // otherMonthlyExpenses,
+  // rateOfInterest,
+  // tenure,
+  // status: state.loanList.status,
+  // customer: {
+  //   customerId,
+  //   // aadharNumber: state.updateLoan.customer.aadharNumber,
+  //   aadharNumber: state.customerList.aadharNumber,
+  //   customerName: state.customerList.customerName,
+  //   email: state.customerList.email,
+  //   gender: state.customerList.gender,
+  //   mobileNumber: state.customerList.mobileNumber,
+  //   nationality: state.customerList.nationality,
+  //   panNumber: state.customerList.panNumber,
+  // dateOfBirth:
+
+  //     })
+  //   );
 
   // Changing State when volume increases/decreases
   const rangeSelector = (event, newValue) => {
@@ -244,7 +257,7 @@ export const ApplyLoan = () => {
                 type="button"
                 // onClick={addNewEmployee}
                 onClick={update}
-                value="Update Loan"
+                value="Update Loan "
                 className="btn btn-lg btn-secondary w-100"
               />
             ) : (

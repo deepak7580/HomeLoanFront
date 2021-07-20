@@ -170,9 +170,12 @@ export const updateCustomerAction = (payload) => {
 };
 
 export const updateLoanAction = (payload) => {
+  console.log("hiiiiiiii", payload.applicationId);
+  console.log("hiiiiiiii22", payload.loanApprovedAmount);
   return async (dispatch) => {
     // making the server call.
-    const url = `http://localhost:8080/update/${payload.applicationId}`;
+    // const url = `http://localhost:8080/update/${payload.applicationId}`;
+    const url = `http://localhost:8080/update`;
     await axios.put(url, payload);
 
     // making the uref empty again.

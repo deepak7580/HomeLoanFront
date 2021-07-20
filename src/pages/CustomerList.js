@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 export const CustomerList = () => {
   const history = useHistory();
   const state = useSelector((state) => state);
+  console.log("hibye", state.loanList.loanApprovedAmount);
   const dispatch = useDispatch();
   useEffect(() => dispatch(getAllCustomerAction()), []);
   const updateRecord = (customerList) => {
@@ -60,6 +61,7 @@ export const CustomerList = () => {
           </tr>
         </tbody>
       </table>
+
       <AppFooter />
     </div>
   );

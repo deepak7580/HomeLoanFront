@@ -6,7 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-image: url(./home1.jpg);
-  background-size: 100% 350%;
+  background-size: cover;
   position: relative;
 }
 
